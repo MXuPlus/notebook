@@ -105,6 +105,10 @@ void BSTree<T>::post_order_traverse(TreeNode<T> &_node) {
     cout << _node.data << " ";
 }
 
+// Insert a node into BST
+// todo: two node with same value
+//       I plan to do this in Red-Black-Tree or AVL-Tree
+//       those two will work in "set" data structure
 template<typename T>
 void BSTree<T>::insert(T _data) {
     TreeNode<T> *pt = root;
@@ -120,9 +124,21 @@ void BSTree<T>::insert(T _data) {
     count ++;
 }
 
+// traversal type:
+#define IN_ORD 0
+#define PRE_ORD 1
+#define POST_ORD 2
+#define LAY_ORD 3
+
+// Traversal function, param: traversal type
 template<typename T>
 void BSTree<T>::traverse(int type) {
-    in_order_traverse();
+    switch (type) {
+        case PRE_ORD: cout << "Pre-order Traversal: ";pre_order_traverse(*root);break;
+        case POST_ORD: cout << "Post-order Traversal: ";post_order_traverse(*root);break;
+        case LAY_ORD: cout << "Lay-order Traversal: ";layer_order_traverse();break;
+        default: cout << "In-order Traversal: ";in_order_traverse();
+    }
     cout << endl;
 }
 
@@ -186,8 +202,7 @@ void BSTree<T>::remove(TreeNode<T> *_node) {
         p->left = _node->left;
         p->left->p = p;
     }
-    delete _node;
-    count --;
+    delete _node; count --;
 }
 
 // Search the node whose data equals to _data
@@ -205,6 +220,7 @@ TreeNode<T> *BSTree<T>::search(T _data) {
 }
 
 // todo: Serialize function (translate a BST into string)
+//       same as insert function, i also plan to do that in AVL-Tree and Red-black-Tree.
 template<typename T>
 char *BSTree<T>::serialize() {
     return nullptr;
@@ -223,6 +239,6 @@ int main() {
     tree.remove(tree.search(31)); // test
     tree.remove(tree.search(16)); // root value test
     cout << tree.count << endl; // count test
-    tree.traverse();
+    tree.traverse(POST_ORD);
     return 0;
 }

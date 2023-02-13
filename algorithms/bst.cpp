@@ -38,8 +38,27 @@ public:
     void remove(TreeNode<T> *_node);
     TreeNode<T> *search(T _data);
     char *serialize();
+    ~BSTree();
     size_t count = 0;
 };
+
+// Release memory, release the tree.
+// I use queue to do this (just like lay-ord traversal)
+// We can divide this into two child processes
+// 1: delete ptr, 2: output the value
+template<typename T>
+BSTree<T>::~BSTree() {
+    if (count == 0) return;
+    queue<TreeNode<T> *> nodes;
+    nodes.push(root);
+    while (!nodes.empty()) {
+        TreeNode<T> *p = nodes.front();
+        nodes.pop();
+        if (p->left) nodes.push(p->left);
+        if (p->right) nodes.push(p->right);
+        delete p;
+    }
+}
 
 // copy subtree, from _src to _dest
 // notice that this function cannot move subtree from _src to _dest
@@ -240,5 +259,7 @@ int main() {
     tree.remove(tree.search(16)); // root value test
     cout << tree.count << endl; // count test
     tree.traverse(POST_ORD);
+    // deconstruct success, memory allocated has been released successfully
+    // I tested this via valgrind-memcheck
     return 0;
 }
